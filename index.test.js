@@ -1,3 +1,5 @@
+// const {describe, it, expect} = require('jest')
+
 const store = require('./index')
 
 describe('The Gilded Rose store', () => {

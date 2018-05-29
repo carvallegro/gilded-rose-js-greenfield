@@ -4,22 +4,25 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "lint": "standard",
-    "lint:fix": "standard --fix",
+    "lint": "eslint ./src/**",
+    "lint:fix": "eslint ./src/** --fix",
     "test": "jest --coverage",
     "test:watch": "jest --watchAll"
   },
   "dependencies": {
+    "eslint": "^4.19.1",
     "eslint-config-standard": "^11.0.0",
     "eslint-plugin-import": "^2.11.0",
     "eslint-plugin-jest": "^21.15.1",
     "eslint-plugin-promise": "^3.7.0",
     "eslint-plugin-standard": "^3.1.0",
     "jest": "^22.4.3",
-    "lodash": "^4.17.10",
-    "standard": "^11.0.1"
+    "lodash": "^4.17.10"
   },
-  "standard": {
-    "globals": [ "describe", "it", "expect" ]
+  "eslintConfig": {
+    "env": {
+      "es6": true,
+      "jest": true
+    }
   }
 }
