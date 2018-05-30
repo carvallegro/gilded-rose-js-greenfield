@@ -42,6 +42,26 @@ describe('The Gilded Rose store', () => {
     })
   })
 
+  describe('Backstage Passes', () => {
+    it('Should increase quality by 1 when there is more than 10 days left', () => {
+      const param = [{name: 'Backstage passes', sellIn: 20, quality: 10}]
+      expect(store.updateItems(param)).toHaveProperty('0.quality', 11)
+      expect(store.updateItems(param)).toEqual([{name: 'Backstage passes', sellIn: 19, quality: 11}])
+    })
+    it('Should increase quality by 2 when there is less than 10 days left', () => {
+      const param = [{name: 'Backstage passes', sellIn: 9, quality: 10}]
+      expect(store.updateItems(param)).toHaveProperty('0.quality', 12)
+    })
+    it('Should increase quality by 3 when there is less than 5 days left', () => {
+      const param = [{name: 'Backstage passes', sellIn: 9, quality: 10}]
+      expect(store.updateItems(param)).toHaveProperty('0.quality', 12)
+    })
+    it('Should drop quality to 0 once it is expired' , () => {
+      const param = [{name: 'Backstage passes', sellIn: 1, quality: 10}]
+      expect(store.updateItems(param)).toHaveProperty('0.quality', 0)
+    })
+  })
+
   describe('Sulfuras', () => {
     it('should never change', () => {
       const param = [{name: 'Sulfuras', sellIn: 10, quality: 80}]
