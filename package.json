@@ -4,8 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "lint": "eslint ./src/**",
-    "lint:fix": "eslint ./src/** --fix",
+    "lint": "standard ./src/**",
+    "lint:fix": "standard ./src/** --fix",
     "test": "jest --coverage --no-watchman",
     "test:watch": "jest --no-watchman --watchAll"
   },
@@ -13,7 +13,9 @@
     "jest": "^23.0.1",
     "lodash": "^4.17.10"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "standard": "^11.0.1"
+  },
   "eslintConfig": {
     "env": {
       "es6": true,

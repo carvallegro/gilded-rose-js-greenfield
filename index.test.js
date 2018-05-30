@@ -25,6 +25,28 @@ describe('The Gilded Rose store', () => {
     })
   })
 
+  describe('Conjured Standard objects', () => {
+    it('should modify sellIn by -1', () => {
+      const param = [{name: 'Conjured Mighty Book', sellIn: 10, quality: 10}]
+      expect(store.updateItems(param)).toHaveProperty('0.sellIn', 9)
+    })
+
+    it('should modify quality by -1', () => {
+      const param = [{name: 'Conjured Mighty Book', sellIn: 10, quality: 10}]
+      expect(store.updateItems(param)).toHaveProperty('0.quality', 8)
+    })
+
+    it('should rotten twice as much when object  is expired', () => {
+      const param = [{name: 'Conjured Mighty Book', sellIn: 1, quality: 10}]
+      expect(store.updateItems(param)).toHaveProperty('0.quality', 7)
+    })
+
+    it('should never have quality below zero', () => {
+      const param = [{name: 'Conjured Mighty Book', sellIn: 1, quality: 0}]
+      expect(store.updateItems(param)).toHaveProperty('0.quality', 0)
+    })
+  })
+
   describe('Aged Brie', () => {
     it('should augment quality the older it gets', () => {
       const param = [{name: 'Aged Brie', sellIn: 10, quality: 10}]
@@ -53,8 +75,8 @@ describe('The Gilded Rose store', () => {
       expect(store.updateItems(param)).toHaveProperty('0.quality', 12)
     })
     it('Should increase quality by 3 when there is less than 5 days left', () => {
-      const param = [{name: 'Backstage passes', sellIn: 9, quality: 10}]
-      expect(store.updateItems(param)).toHaveProperty('0.quality', 12)
+      const param = [{name: 'Backstage passes', sellIn: 4, quality: 10}]
+      expect(store.updateItems(param)).toHaveProperty('0.quality', 13)
     })
     it('Should drop quality to 0 once it is expired' , () => {
       const param = [{name: 'Backstage passes', sellIn: 1, quality: 10}]
