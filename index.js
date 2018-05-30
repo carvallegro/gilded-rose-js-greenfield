@@ -3,32 +3,28 @@ const _ = require('lodash')
 const MIN_QUALITY = 0
 const MAX_QUALITY = 50
 
-const updateItems = (items = []) => {
-  const splitBySulfuras = _.partition(items, {name: 'Sulfuras'})
-  const sulfurasItems = splitBySulfuras[0]
+const updateItems = (items = []) => [
+  ...sulfuras(items),
+  ...update(notSulfuras(items))
+]
 
-  const itemsWithUpdatedSellIn = _(splitBySulfuras[1])
-    .flatMap(updateSellIn)
-    .value()
+const sulfuras = (items = []) => _.filter(items, {name: 'Sulfuras'})
+const notSulfuras = (items = []) => _.xor(items, sulfuras(items))
 
-  const splitByAgedBrie = _.partition(itemsWithUpdatedSellIn, {name: 'Aged Brie'})
+const update = (items = []) => updateSellIn(items, items => [
+  ...updateAgedBrie(items),
+  ...updateStandard(items)
+])
 
-  const updatedAgedBries = _.flatMap(splitByAgedBrie[0], updateBrieQuality)
-
-  const updatedStandard = _(splitByAgedBrie[1])
-    .flatMap(updateStandardQuality)
-    .value()
-  return [
-    ...sulfurasItems,
-    ...updatedAgedBries,
-    ...updatedStandard
-  ]
-}
-
-const updateSellIn = i => ({
+const updateSellIn = (items = [], then) => then(_.flatMap(items, i => ({
   ...i,
   sellIn: i.sellIn - 1
-})
+})))
+
+const updateAgedBrie = items => _(items)
+  .filter({name: 'Aged Brie'})
+  .flatMap(updateBrieQuality)
+  .value()
 
 const updateBrieQuality = i => ({
   ...i,
@@ -38,6 +34,11 @@ const getNewBrieQuality = i =>
   i.sellIn > 0
     ? i.quality + 1
     : i.quality + 2
+
+const updateStandard = items => _(items)
+  .reject({name: 'Aged Brie'})
+  .flatMap(updateStandardQuality)
+  .value()
 
 const updateStandardQuality = i => ({
   ...i,
