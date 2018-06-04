@@ -38,7 +38,7 @@ describe('The Gilded Rose store', () => {
 
     it('should rotten twice as much when object  is expired', () => {
       const param = [{name: 'Conjured Mighty Book', sellIn: 1, quality: 10}]
-      expect(store.updateItems(param)).toHaveProperty('0.quality', 7)
+      expect(store.updateItems(param)).toHaveProperty('0.quality', 6)
     })
 
     it('should never have quality below zero', () => {

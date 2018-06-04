@@ -17,11 +17,20 @@ const updateItems = items => [
 const sulfuras = items => _.filter(items, {name: SULFURAS})
 const notSulfuras = items => _.xor(items, sulfuras(items))
 
-const update = items => updateSellIn(items, items => [
+const update = items => normalizeQuality(updateSellIn(items, items => [
   ...updateAgedBrie(items),
   ...updateBackstagePass(items),
   ...updateStandard(items)
-])
+]))
+
+const normalizeQuality = items => items.map(i => ({
+  ...i,
+  quality: Math.min(MAX_QUALITY, i.quality)
+}))
+  .map(i => ({
+    ...i,
+    quality: Math.max(MIN_QUALITY, i.quality)
+  }))
 
 const updateSellIn = (items, then) => then(_.flatMap(items, i => ({
   ...i,
@@ -47,14 +56,14 @@ const updateBackstagePass = items => _(items)
   .filter({name: BACKSTAGE_PASS})
   .flatMap(i => ({
     ...i,
-    quality: Math.min(MAX_QUALITY, getNewPassQuality(i))
+    quality: getNewPassQuality(i)
   }))
   .value()
 
 const getNewPassQuality = item => {
-  if(item.sellIn <= 0) return 0
-  if(item.sellIn < 5) return item.quality + 3
-  if(item.sellIn < 10) return item.quality + 2
+  if (item.sellIn <= 0) return 0
+  if (item.sellIn < 5) return item.quality + 3
+  if (item.sellIn < 10) return item.quality + 2
   return item.quality + 1
 }
 
@@ -65,11 +74,14 @@ const updateStandard = items => _(items)
 
 const updateStandardQuality = i => ({
   ...i,
-  quality: Math.max(MIN_QUALITY, getNewQuality(i))
+  quality: getNewQuality(i)
 })
 
-const getNewQuality = i =>
-  (i.sellIn > 0 ? i.quality - 1 : i.quality - 2) - (i.name.includes('Conjured') ? 1 : 0)
+const getNewQuality = (i) => i.name.includes('Conjured') ? getConjuredQuality(i) : getStandardQuality(i)
+
+const newQuality = factor => i => i.sellIn > 0 ? i.quality - 1 * factor : i.quality - 2 * factor
+const getStandardQuality = newQuality(1)
+const getConjuredQuality = newQuality(2)
 
 module.exports = {
   updateItems
